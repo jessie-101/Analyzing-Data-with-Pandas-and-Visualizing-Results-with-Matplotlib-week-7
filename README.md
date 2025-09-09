@@ -1,38 +1,91 @@
-Task 1: Load and Explore the Dataset
-Choose a dataset in CSV format (for example, you can use datasets like the Iris dataset, a sales dataset, or any dataset of your choice).
-Load the dataset using pandas.
-Display the first few rows of the dataset using .head() to inspect the data.
-Explore the structure of the dataset by checking the data types and any missing values.
-Clean the dataset by either filling or dropping any missing values.
-Task 2: Basic Data Analysis
-Compute the basic statistics of the numerical columns (e.g., mean, median, standard deviation) using .describe().
-Perform groupings on a categorical column (for example, species, region, or department) and compute the mean of a numerical column for each group.
-Identify any patterns or interesting findings from your analysis.
-Task 3: Data Visualization
-Create at least four different types of visualizations:
-Line chart showing trends over time (for example, a time-series of sales data).
-Bar chart showing the comparison of a numerical value across categories (e.g., average petal length per species).
-Histogram of a numerical column to understand its distribution.
-Scatter plot to visualize the relationship between two numerical columns (e.g., sepal length vs. petal length).
-Customize your plots with titles, labels for axes, and legends where necessary.
+# analyzing_data_with_pandas.py
+# Assignment: Analyzing Data with Pandas and Visualizing Results with Matplotlib
+# Author: [Jessica Chepkemoi]
+# Date: [9th September 2025]
 
-Additional Instructions
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
 
-Dataset Suggestions:
+# Task 1: Load and Explore Dataset
 
-You can use publicly available datasets from sites like Kaggle or UCI Machine Learning Repository.
-The Iris dataset (a classic dataset for classification problems) can be accessed via sklearn.datasets.load_iris(), which can be used for the analysis.
+iris = load_iris(as_frame=True)
+df = iris.frame
+df['species'] = iris.target_names[iris.target]
 
-Plot Customization:
+print("First 5 rows:")
+print(df.head())
 
-Customize the plots using the matplotlib library to add titles, axis labels, and legends.
-Use seaborn for additional plotting styles, which can make your charts more visually appealing.
+print("\nDataset info:")
+print(df.info())
 
-Error Handling:
+print("\nMissing values:")
+print(df.isnull().sum())
 
-Handle possible errors during the file reading (e.g., file not found), missing data, or incorrect data types by using exception-handling mechanisms (try, except).
+# Clean missing values (if any)
+df = df.dropna()
 
-Submission:
 
-Ensure your submission is complete with all necessary code and explanations. Make sure that each plot is properly labeled and provides insights into the dataset.
+# Task 2: Basic Data Analysis
+
+print("\nSummary statistics:")
+print(df.describe())
+
+print("\nAverage petal length per species:")
+print(df.groupby("species")["petal length (cm)"].mean())
+
+
+# Task 3: Data Visualization
+
+sns.set(style="whitegrid")
+
+# 1. Line chart
+plt.figure(figsize=(8,5))
+plt.plot(df.index, df["sepal length (cm)"], label="Sepal Length")
+plt.title("Line Chart: Sepal Length Trend")
+plt.xlabel("Index (as time)")
+plt.ylabel("Sepal Length (cm)")
+plt.legend()
+plt.show()
+
+# 2. Bar chart
+plt.figure(figsize=(8,5))
+sns.barplot(x="species", y="petal length (cm)", data=df, estimator="mean", ci=None)
+plt.title("Bar Chart: Avg Petal Length per Species")
+plt.xlabel("Species")
+plt.ylabel("Petal Length (cm)")
+plt.show()
+
+# 3. Histogram
+plt.figure(figsize=(8,5))
+plt.hist(df["sepal length (cm)"], bins=15, color="skyblue", edgecolor="black")
+plt.title("Histogram: Sepal Length Distribution")
+plt.xlabel("Sepal Length (cm)")
+plt.ylabel("Frequency")
+plt.show()
+
+# 4. Scatter plot
+plt.figure(figsize=(8,5))
+sns.scatterplot(x="sepal length (cm)", y="petal length (cm)", hue="species", data=df)
+plt.title("Scatter Plot: Sepal vs Petal Length")
+plt.xlabel("Sepal Length (cm)")
+plt.ylabel("Petal Length (cm)")
+plt.legend(title="Species")
+plt.show()
+
+
+# Error Handling Example
+
+try:
+    df_test = pd.read_csv("non_existent_file.csv")
+except FileNotFoundError:
+    print("Error: The dataset file was not found. Please check the file path.")
+
+
+# Findings / Observations
+
+# Setosa has the smallest petals; Virginica has the largest.
+# Sepal length is roughly normally distributed.
+# Sepal length and petal length are positively correlated.
 
